@@ -16,7 +16,7 @@
     "url": "git+https://github.com/Maxiaoxiang/zoe-skeleton-webpack-plugin.git"
   },
   "author": "mss <251445460@qq.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Maxiaoxiang/zoe-skeleton-webpack-plugin/issues"
   },
