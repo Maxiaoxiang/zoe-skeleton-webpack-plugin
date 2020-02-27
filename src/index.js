@@ -1,5 +1,5 @@
 function replaceShell(name) {
-  console.log(name);
+  console.log('hello:' + name);
 }
 
 module.exports = replaceShell;
