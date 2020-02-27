@@ -4,7 +4,7 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "lint": "eslint --fix src",
     "build": "babel src -d lib",
     "build:watch": "npm run build -- --watch",
     "test": "npm run build && mocha -t 5000",
