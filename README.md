@@ -1,2 +1,2 @@
-[![Build Status](https://travis-ci.org/wulv/del-expired-file.png)](https://travis-ci.org/wulv/del-expired-file)
-[![Coverage Status](https://img.shields.io/coveralls/wulv/del-expired-file/master.svg?style=flat)](https://coveralls.io/github/wulv/del-expired-file?branch=master)
+[![Build Status](https://travis-ci.org/Maxiaoxiang/zoe-skeleton-webpack-plugin.png)](https://travis-ci.org/Maxiaoxiang/zoe-skeleton-webpack-plugin)
+[![Coverage Status](https://img.shields.io/coveralls/Maxiaoxiang/zoe-skeleton-webpack-plugin/master.svg?style=flat)](https://coveralls.io/github/Maxiaoxiang/zoe-skeleton-webpack-plugin?branch=master)
