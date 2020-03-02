@@ -27,5 +27,6 @@
     "coveralls": "^3.0.9",
     "istanbul": "^0.4.5",
     "mocha": "^7.1.0"
-  }
+  },
+  "dependencies": {}
 }
