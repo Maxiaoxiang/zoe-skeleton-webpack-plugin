@@ -219,7 +219,6 @@ var Skeleton = (function (exports) {
   function imgHandler(ele, {color, shape, shapeOpposite, fixedSize}) {
     const {width, height} = ele.getBoundingClientRect();
     const isFixed = ele.hasAttribute(IMAGE_FIXED) || fixedSize;
-    console.log(fixedSize, isFixed)
     const attrs = {
       width,
       height,
@@ -379,8 +378,8 @@ var Skeleton = (function (exports) {
 
   function textHandler(ele, {color}, cssUnit, decimal) {
     const {width} = ele.getBoundingClientRect();
-    // if the text block's width is less than 50, just set it to transparent.
-    if (width <= 50) {
+    // if the text block's width is less than 30, just set it to transparent.
+    if (width <= 25) {
       return setOpacity(ele)
     }
     const comStyle = getComputedStyle(ele);
@@ -662,6 +661,10 @@ var Skeleton = (function (exports) {
       if (checkHasTextDecoration(styles)) {
         ele.style.textDecorationColor = TRANSPARENT;
       }
+      //隐藏所有 input 元素，防止 placeholder 未隐藏
+      if (ele.tagName === 'INPUT') {
+        return toRemove.push(ele)
+      }
       // 隐藏所有 svg 元素
       if (ele.tagName === 'svg') {
         return svgs.push(ele)
@@ -710,16 +713,6 @@ var Skeleton = (function (exports) {
       toRemove.push(offScreenParagraph.parentNode);
     }
     toRemove.forEach(e => removeElement(e));
-
-    // console.log(texts);console.log('----------');
-    // console.log(buttons);console.log('----------');
-    // console.log(hasImageBackEles);console.log('----------');
-    // console.log(oRemove);console.log('----------');
-    // console.log(imgs);console.log('----------');
-    // console.log(svgs);console.log('----------');
-    // console.log(pseudos);console.log('----------');
-    // console.log(gradientBackEles);console.log('----------');
-    // console.log(grayBlocks);console.log('----------');
   }
 
   function genSkeleton(options) {

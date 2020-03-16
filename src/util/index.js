@@ -9,32 +9,9 @@ const {minify} = require('html-minifier')
 const {html2json, json2html} = require('html2json')
 const htmlBeautify = require('js-beautify').html_beautify
 const {htmlBeautifyConfig, moduleRouters} = require('../config/config')
-const getLogger = require('webpack-log');
-const log = getLogger({name: 'zoe-skeleton'});
-
-const getCleanedShellHtml = (html) => {
-    const STYLE_REG = /<style>[\s\S]+?<\/style>/
-    const BODY_REG = /<body>([\s\S]+?)<\/body>/
-    const css = STYLE_REG.exec(html)[0]
-    const cleanHtml = BODY_REG.exec(html)[1]
-    return `${css}\n${cleanHtml}`
-}
 
 function htmlMinify(html, options) {
     return options === false ? htmlBeautify(html, htmlBeautifyConfig) : minify(html, options)
-}
-
-async function writeShell(routesData, options) {
-    const {pathname, minify: minOptions} = options
-    return Promise.all(Object.keys(routesData).map(async (route) => {
-        const html = routesData[route].html
-        const minifiedHtml = htmlMinify(getCleanedShellHtml(html), minOptions)
-        const trimedRoute = route.replace(/\//g, '')
-        const filePath = path.join(pathname, trimedRoute ? `${trimedRoute}.html` : 'index.html')
-        await fse.ensureDir(pathname)
-        await promisify(fs.writeFile)(filePath, minifiedHtml, 'utf-8')
-        return Promise.resolve()
-    }))
 }
 
 function sleep(duration) {
@@ -45,8 +22,7 @@ function sleep(duration) {
 
 async function genScriptContent() {
     const sourcePath = path.resolve(__dirname, '../script/index.js')
-    const result = await promisify(fs.readFile)(sourcePath, 'utf-8')
-    return result
+    return await promisify(fs.readFile)(sourcePath, 'utf-8')
 }
 
 // add script tag into html string, just as document.body.appendChild(script)
@@ -60,14 +36,6 @@ function addScriptTag(source, src, port) {
     <script type="text/javascript" src="${src}" defer></script>
     `
     return `${token[0]}${scriptTag}</body>${token[1]}`
-}
-
-function createLog(options) {
-    console.log(options)
-}
-
-function isFunction(func) {
-    return typeof func === 'function';
 }
 
 /**
@@ -102,31 +70,6 @@ const collectImportantComments = (css) => {
     return combined.join('\n')
 }
 
-const outputSkeletonScreen = async (originHtml, options, log) => {
-    const {pathname, staticDir, routes} = options
-    return Promise.all(routes.map(async (route) => {
-        const trimedRoute = route.replace(/\//g, '')
-        const filePath = path.join(pathname, trimedRoute ? `${trimedRoute}.html` : 'index.html')
-        const html = await promisify(fs.readFile)(filePath, 'utf-8')
-        const finalHtml = originHtml.replace('<!-- shell -->', html)
-        const outputDir = path.join(staticDir, route)
-        const outputFile = path.join(outputDir, 'index.html')
-        await fse.ensureDir(outputDir)
-        await promisify(fs.writeFile)(outputFile, finalHtml, 'utf-8')
-        log(`write ${outputFile} successfully in ${route}`)
-        return Promise.resolve()
-    }))
-}
-
-// Server 端主动推送消息到制定 socket
-const sockWrite = (sockets, type, data) => {
-    sockets.forEach((sock) => {
-        sock.write(JSON.stringify({
-            type, data
-        }))
-    })
-}
-
 const addDprAndFontSize = (html) => {
     const json = html2json(html)
     const rootElement = json.child.filter(c => c.tag === 'html')[0]
@@ -146,28 +89,6 @@ const addDprAndFontSize = (html) => {
     rootElement.attr = rootAttr
     return json2html(json)
 }
-
-const generateQR = async (text) => {
-    try {
-        return await QRCode.toDataURL(text)
-    } catch (err) {
-        return Promise.reject(err)
-    }
-}
-
-const getLocalIpAddress = () => {
-    const interfaces = os.networkInterfaces()
-    for (const devName in interfaces) { // eslint-disable-line guard-for-in
-        const iface = interfaces[devName]
-        for (const alias of iface) {
-            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
-                return alias.address
-            }
-        }
-    }
-}
-
-const snakeToCamel = name => name.replace(/-([a-z])/g, (_, p1) => p1.toUpperCase())
 
 //格式化输出结果
 const formatHtml = (result) => {
@@ -222,15 +143,10 @@ const writeSkeleton = async (staticDir, url, html) => {
 
 module.exports = {
     sleep,
-    sockWrite,
-    snakeToCamel,
     addScriptTag,
-    generateQR,
     htmlMinify,
-    outputSkeletonScreen,
     genScriptContent,
     addDprAndFontSize,
-    getLocalIpAddress,
     collectImportantComments,
     writeSkeleton,
     writeView
