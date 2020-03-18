@@ -34,10 +34,8 @@ class Server extends EventEmitter {
         io.on('connection', function (socket) {
             //生成骨架屏
             socket.on('generate', async function (url) {
-                log.info('当前url：', url);
-                log.info('正在获取页面结构');
+                log.info('当前骨架url：', url);
                 const result = await skeletonBuilder.build(url);
-                log.info('正在写入请稍后');
                 await writeSkeleton(staticDir, url, result);
                 await writeView(staticDir, viewsDir, url);
                 log.info('生成完毕，请刷新并查看该路径：'+ staticDir);
