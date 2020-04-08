@@ -60,15 +60,15 @@ function addScriptTag(source, src, port) {
  * @return {string}
  */
 const collectImportantComments = (css) => {
-    const once = new Set()
+    const once = new Set();
     const cleaned = css.replace(/(\/\*![\s\S]*?\*\/)\n*/gm, (match, p1) => {
-        once.add(p1)
+        once.add(p1);
         return ''
-    })
-    const combined = Array.from(once)
-    combined.push(cleaned)
-    return combined.join('\n')
-}
+    });
+    const combined = Array.from(once);
+    combined.push(cleaned);
+    return combined.join('\n');
+};
 
 const addDprAndFontSize = (html) => {
     const json = html2json(html)
