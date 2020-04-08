@@ -105,7 +105,17 @@ const formatRouter = (router) => {
     }
     return router;
 };
+/**
+ * 检测指定目录下指定文件夹/文件是否存在
+ * @param {String} fullpath 指定目录/文件本地路径
+ * @return {Boolean} 是否存在文件/文件夹
+ */
+let isExist = function (fullpath) {
+    return fs.existsSync(fullpath);
+};
 
+
+//写入views模板文件引入（新版title-config路口开放后该功能未来可能移除）
 const writeView = async (staticDir, viewsDir, url) => {
     let urlStr = url.split('?')[0];
     return new Promise((async (resolve) => {
@@ -114,15 +124,19 @@ const writeView = async (staticDir, viewsDir, url) => {
         let filename = pathArr.pop() + '.html';
         let pathStr = '/' + pathArr.join('/');
         const filePath = path.join(viewsDir + pathStr, filename);
-        const html = await promisify(fs.readFile)(filePath, 'utf-8');
-        let htmlArr = html.split('<div id="app"></div>');
-        if(html.indexOf('<!--shell-->') === -1) {
-            htmlArr.splice(1, 0, `<div id="app"></div>\n<!--shell-->\n<%include ../../../public/shell${pathStr+'/'+filename} %>`);
+        if (isExist(filePath)) {
+            const html = await promisify(fs.readFile)(filePath, 'utf-8');
+            let htmlArr = html.split('<div id="app"></div>');
+            if(html.indexOf('<!--shell-->') === -1) {
+                htmlArr.splice(1, 0, `<div id="app"></div>\n<!--shell-->\n<%include ../../../public/shell${pathStr+'/'+filename} %>`);
+            } else {
+                htmlArr.splice(1, 0, `<div id="app"></div>`);
+            }
+            await promisify(fs.writeFile)(filePath, htmlArr.join(''), 'utf-8');
+            return resolve();
         } else {
-            htmlArr.splice(1, 0, `<div id="app"></div>`);
+            return resolve();
         }
-        await promisify(fs.writeFile)(filePath, htmlArr.join(''), 'utf-8');
-        return resolve();
     }));
 };
 
