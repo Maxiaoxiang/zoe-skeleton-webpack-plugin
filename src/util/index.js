@@ -60,15 +60,15 @@ function addScriptTag(source, src, port) {
  * @return {string}
  */
 const collectImportantComments = (css) => {
-    const once = new Set()
+    const once = new Set();
     const cleaned = css.replace(/(\/\*![\s\S]*?\*\/)\n*/gm, (match, p1) => {
-        once.add(p1)
+        once.add(p1);
         return ''
-    })
-    const combined = Array.from(once)
-    combined.push(cleaned)
-    return combined.join('\n')
-}
+    });
+    const combined = Array.from(once);
+    combined.push(cleaned);
+    return combined.join('\n');
+};
 
 const addDprAndFontSize = (html) => {
     const json = html2json(html)
@@ -115,7 +115,7 @@ let isExist = function (fullpath) {
 };
 
 
-//写入views模板文件引入（新版title-config路口开放后该功能未来可能移除）
+//写入views模板文件引入（新版title-config路口开放后该功能未来可能移除）.
 const writeView = async (staticDir, viewsDir, url) => {
     let urlStr = url.split('?')[0];
     return new Promise((async (resolve) => {
